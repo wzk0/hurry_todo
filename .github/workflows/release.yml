@@ -23,8 +23,8 @@ jobs:
       # 3. 安装依赖
       - name: Install dependencies
         run: |
-          python3 -m pip3 install --upgrade pip3 --break-system-packages
-          pip3 install flet[all] --break-system-packages
+          python -m pip install --upgrade pip --break-system-packages
+          pip install flet[all] --break-system-packages
 
       # 4. 构建 APK
       - name: Build APK
