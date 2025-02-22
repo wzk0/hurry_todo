@@ -1,0 +1,35 @@
+[project]
+name = "todo"
+version = "0.1.0"
+description = "一个AI加持的四象限待办应用, 仅需一句话即可快速生成待办."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "wzk0", email = "729301277@qq.com" }
+]
+dependencies = [
+  "flet==0.27.0"
+]
+
+[tool.flet.android]
+split_per_abi = true
+
+[tool.flet]
+org = "thdbd.wzk"
+product = "快办"
+company = "thdbd"
+copyright = "Copyright (C) 2025 by thdbd"
+
+[tool.flet.app]
+path = "src"
+
+[tool.uv]
+dev-dependencies = [
+    "flet[all]==0.27.0",
+]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
+flet = {extras = ["all"], version = "0.27.0"}

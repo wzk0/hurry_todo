@@ -1,0 +1,61 @@
+name: Create Release and Upload APKs
+
+on:
+  push:
+    tags:
+      - "v*" # 监听以 "v" 开头的 tag（例如 v1.0.0）
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. 设置 Python 环境
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12" # 根据您的项目需求选择 Python 版本
+
+      # 3. 安装依赖
+      - name: Install dependencies
+        run: |
+          python3 -m pip3 install --upgrade pip3 --break-system-packages
+          pip3 install flet[all] --break-system-packages
+
+      # 4. 构建 APK
+      - name: Build APK
+        run: |
+          flet build apk
+        # 构建结果会生成在 build/apk 目录中
+
+      # 5. 创建 Release
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            版本：${{ github.ref }}
+            
+            包含以下文件：
+            - 各架构的 APK 文件
+            - MD5 校验码文件
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 6. 上传 build/apk 中的所有文件
+      - name: Upload all files from build/apk
+        run: |
+          for file in build/apk/*; do
+            echo "Uploading $file..."
+            gh release upload ${{ github.ref }} "$file"
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
